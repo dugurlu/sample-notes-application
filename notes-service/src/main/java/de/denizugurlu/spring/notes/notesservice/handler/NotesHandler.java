@@ -2,6 +2,7 @@ package de.denizugurlu.spring.notes.notesservice.handler;
 
 import de.denizugurlu.spring.notes.notesservice.domain.Note;
 import de.denizugurlu.spring.notes.notesservice.repository.NoteRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -27,6 +28,7 @@ public class NotesHandler {
         return noteRepository.insert(note).next()
                 .flatMap(savedNote -> created(UriComponentsBuilder.fromPath("/notes/{id}").buildAndExpand(savedNote.getId()).toUri())
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
+//                        .header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*")
                         .body(fromObject(savedNote)));
     }
 }

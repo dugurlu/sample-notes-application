@@ -1,0 +1,44 @@
+version: '3'
+services:
+  discovery-service:
+#    build: discovery-service/
+    image: dugurlu/discovery-service
+    container_name: discovery-service
+    ports:
+      - 8761:8761
+
+#  gateway-service:
+##    build: gateway-service/
+#    image: dugurlu/gateway-service
+##    container_name: gateway-service
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      - discovery-service
+
+  notes-service:
+#    build: notes-service/
+    image: dugurlu/notes-service
+    container_name: notes-service
+    ports:
+      - 8801:8801
+    depends_on:
+      - notes-mongo
+      - discovery-service
+    environment:
+      - server.port=8801
+      - eureka.host=discovery-service
+      - eureka.instance.preferIpAddress=true
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+
+  notes-mongo:
+    image: mongo:latest
+    container_name: notes-mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - data-volume:/data/db
+
+
+volumes:
+  data-volume:
