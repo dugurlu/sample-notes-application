@@ -7,14 +7,16 @@ services:
     ports:
       - 8761:8761
 
-#  gateway-service:
-##    build: gateway-service/
-#    image: dugurlu/gateway-service
-##    container_name: gateway-service
-#    ports:
-#      - 8080:8080
-#    depends_on:
-#      - discovery-service
+  gateway-service:
+#    build: gateway-service/
+    image: dugurlu/gateway-service
+    container_name: gateway-service
+    ports:
+      - 8080:8080
+    depends_on:
+      - discovery-service
+    links:
+      - discovery-service
 
   notes-service:
 #    build: notes-service/
@@ -25,11 +27,9 @@ services:
     depends_on:
       - notes-mongo
       - discovery-service
-    environment:
-      - server.port=8801
-      - eureka.host=discovery-service
-      - eureka.instance.preferIpAddress=true
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    links:
+      - discovery-service
+      - notes-mongo
 
   notes-mongo:
     image: mongo:latest
